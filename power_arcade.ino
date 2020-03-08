@@ -11,7 +11,7 @@ bool isOn;
 void setup() {
   Serial.begin(9600);
 
-  isOn = false;
+  isOn = true;
 
   pinMode(BUTTON_INPUT_PIN, INPUT);
   pinMode(TRANSISTOR_OUTPUT_PIN, OUTPUT);
@@ -25,8 +25,10 @@ void loop() {
   Serial.println(isOn);
   if(digitalRead(BUTTON_INPUT_PIN) == 1 && !isOn){
     startupSequence();
+    delay(240000);
   } else if(digitalRead(BUTTON_INPUT_PIN) == 1 && isOn) {
     shutdownSequence();
+    delay(240000);
   }
 }
 
@@ -66,6 +68,4 @@ void shutdownSequence(){
   digitalWrite(TRANSISTOR_OUTPUT_PIN, LOW);
   delay(3000);
   digitalWrite(13, LOW);
-
-  //TODO: Stay off for a long time
 }
