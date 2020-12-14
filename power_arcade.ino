@@ -3,6 +3,7 @@
 #define BUTTON_INPUT_PIN 6
 #define TRANSISTOR_OUTPUT_PIN 9 //Green LED
 #define IR_OUTPUT_PIN 3 //White LED
+#define TOP_LIGHT_PIN 7
 
 IRsend irsend;
 
@@ -11,10 +12,11 @@ bool isOn;
 void setup() {
   Serial.begin(9600);
 
-  isOn = true;
+  isOn = false;
 
   pinMode(BUTTON_INPUT_PIN, INPUT);
   pinMode(TRANSISTOR_OUTPUT_PIN, OUTPUT);
+  pinMode(7, OUTPUT);
   //IR OUTPUT PIN IS AUTOMATICALLY SET TO PWM PIN 3
 
   //Onboard LED pin
@@ -22,6 +24,12 @@ void setup() {
 }
 
 void loop() {
+  if(isOn){
+    digitalWrite(7, HIGH);
+  } else {
+    digitalWrite(7, LOW);
+  }
+  
   Serial.println(isOn);
   if(digitalRead(BUTTON_INPUT_PIN) == 1 && !isOn){
     startupSequence();
@@ -40,6 +48,9 @@ void startupSequence(){
   irsend.sendNEC(0x40BE629D, 32);
   digitalWrite(13, HIGH);
   delay(10000);
+
+  //turn on lamp
+  digitalWrite(TOP_LIGHT_PIN, HIGH);
   
   //send brief HIGH signal to transistor
   digitalWrite(13, HIGH);
@@ -60,6 +71,9 @@ void shutdownSequence(){
   irsend.sendNEC(0x40BE629D, 32);
   digitalWrite(13, HIGH);
   delay(10000);
+
+  //turn off lamp
+  digitalWrite(TOP_LIGHT_PIN, LOW);
   
   //send brief HIGH signal to transistor
   digitalWrite(13, HIGH);
